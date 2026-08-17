@@ -1,0 +1,12 @@
+{
+  "name": "pi-agent-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "dev": "npm run dev --workspace=@pi-agent/backend",
+    "dev:web": "npm run dev --workspace=@pi-agent/web",
+    "start": "npm run start --workspace=@pi-agent/backend"
+  }
+}

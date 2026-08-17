@@ -1,0 +1,28 @@
+# 依赖
+node_modules/
+
+# 构建产物
+dist/
+build/
+
+# 运行时数据（会话记录含用户消息，不外传）
+data/
+
+# 环境变量与密钥（严禁提交）
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# 日志
+*.log
+npm-debug.log*
+
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+*.swp

@@ -1,0 +1,56 @@
+# pi-agent-server 配置（唯一配置入口，代码不写死任何内容）
+
+server:
+  # 监听所有网卡（内网其他机器可访问）；仅本机调试可改回 127.0.0.1
+  host: "0.0.0.0"
+  port: 8787
+  # 信任反向代理传递的 X-Forwarded-For（Vite dev 代理 / Nginx 部署时必须开启；
+  # 仅信任来自本机回环的 XFF，直接访问伪造无效）
+  trustProxy: true
+  # IP 白名单（内网访问控制，10 人以内场景）：
+  # - 空列表 = 不限制（开发模式）
+  # - 精确 IP：如 "192.168.1.50"
+  # - 段通配：如 "192.168.1.*"（结尾 .* 表示该前缀下所有 IP）
+  # - "127.0.0.1" / "::1" 本机始终建议保留（Vite 代理与本地调试需要）
+  allowedIps:
+    - "127.0.0.1"
+    - "::1"
+    - "192.168.31.*"
+
+storage:
+  # 会话持久化目录（JSON 文件，按客户端 IP 隔离）
+  dir: "./data"
+
+agent:
+  # 工作目录（agent 的 cwd，可执行 bash/read 等）
+  cwd: "./"
+  # pi 配置目录（models.json/auth.json/settings.json）
+  agentDir: "~/.pi/agent"
+  # 模型：不填则用 pi settings.json 的 defaultProvider/defaultModel
+  provider: "deepseek"
+  model: "deepseek-v4-flash"
+  # 工具白名单（SDK allowlist 语义：只启用列出的工具）
+  # 能力边界：read（读文件）+ bash（执行脚本），其余一律不给
+  tools: ["read", "bash"]
+  # 禁用 pi CLI 的全局 skill/扩展（隔离）
+  noSkills: true
+  noExtensions: true
+  noContextFiles: true
+
+prompts:
+  # 系统提示词文件（产品人格/规则）
+  system: "./prompts/system.md"
+  # 追加提示词目录（按文件叠加，按文件名排序）
+  appendDir: "./prompts/append"
+
+skills:
+  # skill 目录列表（全部能力来源，按顺序合并）
+  dirs:
+    - "./skills/builtin"
+    - "./skills/custom"
+  # 热加载：每次会话创建时重新扫描
+  reloadOnSession: true
+
+tools:
+  # 自定义工具插件目录（每个 .mjs 文件默认导出 ToolDefinition[]）
+  dir: "./tools"
